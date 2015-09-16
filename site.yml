@@ -1,0 +1,28 @@
+---
+- name: update all servers
+  hosts: all
+  sudo: true
+  roles:
+    - common
+
+- name: update all servers
+  hosts: proxy
+  sudo: true
+  vars:
+    web_server: 192.168.50.5:80
+  roles:
+    - proxy
+
+- name: update all servers
+  hosts: mysql
+  sudo: true
+  roles:
+    - database
+
+- name: update all servers
+  hosts: web
+  sudo: true
+  vars:
+    document_root: /vagrant
+  roles:
+    - webserver

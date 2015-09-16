@@ -1,3 +1,17 @@
 ---
-- name: install mysql
-  apt: name=mysql-server state=present
+- name: install MySQL
+  action: apt name={{ item }}
+  with_items:
+    - mysql-server
+    - python-mysqldb
+
+- name: Ensure MySQL will listen on all ip interfaces (bind to 0.0.0.0)
+  lineinfile: dest=/etc/mysql/my.cnf
+    regexp='bind-address\s*=\s*127\.0\.0\.1\s*'
+    line='bind-address   = 0.0.0.0'
+    state=present
+    backrefs=yes
+  notify: reload mysql
+
+- name: add mysql user
+  mysql_user: name=steven password=1234 host=% priv=*.*:ALL,GRANT state=present
